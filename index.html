@@ -21,8 +21,8 @@
         time_string = now.strftime("%Y-%m-%dT%H:%M:%S")
         event_start = now.strftime("%-m/%-d/%Y")
 
-        url = "https://recsports.osu.edu/fms/Home/GetBookings?id=3&startDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year) +"&endDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year)
-        capacity_url = "https://recsports.osu.edu/fms/Home/GetLocations?locationCode=rpac"
+        url = "https%3A//recsports.osu.edu/fms/Home/GetBookings?id=3&startDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year) +"&endDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year)
+        capacity_url = "https%3A//recsports.osu.edu/fms/Home/GetLocations?locationCode=rpac"
         # store the response of URL
         response = urlopen(url)
         response_capacity = urlopen(capacity_url)
