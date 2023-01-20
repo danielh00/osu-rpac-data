@@ -1,0 +1,61 @@
+from datetime import *
+# import urllib library
+from urllib.request import urlopen
+import json
+from tabulate import tabulate
+
+# Get the current day
+now = datetime.now().replace(hour=0, minute=0, second=0)
+
+# Format the current time as a string in the desired format
+time_string = now.strftime("%Y-%m-%dT%H:%M:%S")
+event_start = now.strftime("%-m/%-d/%Y")
+
+url = "https://recsports.osu.edu/fms/Home/GetBookings?id=3&startDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year) +"&endDate=" + str(now.month) + "%2F" + str(now.day) + "%2F"+ str(now.year)
+capacity_url = "https://recsports.osu.edu/fms/Home/GetLocations?locationCode=rpac"
+# store the response of URL
+response = urlopen(url)
+response_capacity = urlopen(capacity_url)
+
+# storing the JSON response 
+# from url in data
+data = json.loads(response.read())
+data_capacity = json.loads(response_capacity.read())
+
+# print the json response
+# print(data)
+
+relevant_ids = []
+relevant_ids.extend([310, 441, 442]) #UG
+relevant_ids.extend([305, 439, 440]) #TWD
+relevant_ids.extend([315]) #North Gym
+relevant_ids.extend([318]) #South Gym
+
+rel_data = []
+
+for row in data['events']:
+  if row['eventStart'] != event_start:
+    break
+  if int(row['roomID']) not in relevant_ids:
+    continue
+  rel_data.append([row['room']['room'],row['bookingStart'],row['bookingEnd'],row['eventName']])
+
+event_headers = ['Location', 'Start', 'End', 'Event']
+rel_data.sort(key=lambda x: x[0])
+
+print(tabulate(rel_data, headers=event_headers))
+
+print("")
+
+relevant_loc_ids = [3895, 3896, 3888, 5395, 3875, 5396]
+
+cap_data = []
+for row in data_capacity['locations']:
+  if int(row['locationId']) not in relevant_loc_ids:
+    continue
+  cap_data.append([row['locationName'], row['lastUpdatedDateAndTimeToUniversityFormat'], row['lastCount']])
+
+cap_headers = ['Location', 'Updated', 'Count']
+
+print(tabulate(cap_data, headers=cap_headers))
+
